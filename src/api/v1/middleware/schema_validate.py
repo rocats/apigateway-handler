@@ -5,7 +5,7 @@ from fastapi import Request, status
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 
-from modules.constant import BASE_API_PATH
+from constant import BASE_API_PATH
 
 load_dotenv()
 
