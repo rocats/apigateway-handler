@@ -5,6 +5,7 @@ from fastapi import Request, status
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 
+from modules.constant import BASE_API_PATH
 
 load_dotenv()
 
@@ -14,7 +15,7 @@ class ValidateChannel:
         self.whitelist_channels = self.get_whitelist_channels()
 
     async def __call__(self, request: Request, call_next):
-        if request.method == "POST" and str(request.url).split("/api/v1")[1] in [
+        if request.method == "POST" and str(request.url).split(BASE_API_PATH)[1] in [
             "/webhook"
         ]:
             body = await request.json()
