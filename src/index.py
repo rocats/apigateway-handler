@@ -5,20 +5,20 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from api.v1.middleware.schema_validate import ValidateChannel
 from api.v1.middleware.request_body import InterceptRequestBody
 from api.v1.middleware.process_time import ProcessTime
-from api.v1.middleware.request_id import RequestId
+from api.v1.middleware.cloudevent_metadata import CloudEventMetadata
 from api.v1.router import router
 
 # app
 app = FastAPI()
 
 # middlewares
+app.add_middleware(BaseHTTPMiddleware, dispatch=CloudEventMetadata())
 app.add_middleware(BaseHTTPMiddleware, dispatch=ValidateChannel())
-app.add_middleware(BaseHTTPMiddleware, dispatch=RequestId())
-app.add_middleware(BaseHTTPMiddleware, dispatch=ProcessTime())
 app.add_middleware(BaseHTTPMiddleware, dispatch=InterceptRequestBody())
+app.add_middleware(BaseHTTPMiddleware, dispatch=ProcessTime())
 
 # router
 app.include_router(router, prefix="/api/v1")
 
 if __name__ == "__main__":
-    run("index:app", host="0.0.0.0", port=5000, reload=True, workers=1)
+    run("index:app", host="0.0.0.0", port=5000, reload=True, workers=1, log_config=None)
