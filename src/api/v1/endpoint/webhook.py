@@ -15,17 +15,17 @@ async def forward(url):
 
 @router.post("/webhook")
 async def webhook(request: Request):
-    serialized_json = json.dumps(await request.json())
-
     try:
+        serialized_json = json.dumps(await request.json())
         res = await forward(os.getenv("RELAY_SERVICE_ENDPOINT", ""))
+
         if res.status_code == status.HTTP_200_OK:
             return JSONResponse(
                 content=jsonable_encoder(json.loads(serialized_json)),
                 status_code=status.HTTP_200_OK,
             )
         else:
-            raise HTTPError("failed to relay message to designated service")
+            raise HTTPError("Failed to relay message to designated service")
     except HTTPError as err:
         return JSONResponse(
             content=jsonable_encoder({"error": str(err)}),
