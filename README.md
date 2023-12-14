@@ -1,1 +1,1 @@
-# apigateway-handler
+# apigateway-interceptor
