@@ -55,6 +55,10 @@ jobs:
       image_tag: ${{ env.image_tag }}
     steps:
       - uses: actions/checkout@master
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
       - name: Kaniko build - quay.io
         id: quay_build
         uses: aevea/action-kaniko@master
