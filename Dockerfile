@@ -22,9 +22,9 @@ ARG APP_DIR
 ADD requirements.prod.txt ${APP_DIR}/requirements.txt
 
 WORKDIR ${APP_DIR}
-RUN pip install -r ./requirements.txt
+RUN pip install -r requirements.txt
 
-COPY src/ ${APP_DIR}/
+COPY src/ ./
 
 RUN pyinstaller index.py
 
@@ -41,9 +41,9 @@ RUN apt-get clean autoclean && \
     apt-get autoremove -y && \
     rm -rf /var/lib/{apt,dpkg,cache,log}/
 
-WORKDIR /app
+WORKDIR ${APP_DIR}
 
-COPY --from=builder /app/dist/index/ ./
+COPY --from=builder ${APP_DIR}/dist/index/ ./
 
 RUN chmod +x ./index
 
