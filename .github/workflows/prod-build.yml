@@ -47,6 +47,7 @@ jobs:
       GOOS: ${{ matrix.goos }}
       GOARCH: ${{ matrix.goarch }}
       PLATFORM: ${{ matrix.platform }}
+      PYTHON_VERSION: 3.13
       dockerfile: Dockerfile
       image_name: rocats/${{ github.event.repository.name }}
       image_tag: prod-${{ needs.pre-actions.outputs.git_sha_short }}-${{ github.run_number }}
@@ -67,7 +68,7 @@ jobs:
           tag_with_latest: true
           cache: true
           cache_registry: quay.io/rocats/cache
-          extra_args: --build-arg PYTHON_VERSION=3.11 --build-arg opts="'GOARCH=${{ env.GOARCH }}','CGO_ENABLED=${{ env.CGO_ENABLED }}'" --custom-platform ${{ env.PLATFORM }}
+          extra_args: --build-arg PYTHON_VERSION=${{ env.PYTHON_VERSION }} --build-arg opts="'GOARCH=${{ env.GOARCH }}' 'CGO_ENABLED=${{ env.CGO_ENABLED }}'" --custom-platform ${{ env.PLATFORM }}
 
       - name: Echo image uri
         run: |
