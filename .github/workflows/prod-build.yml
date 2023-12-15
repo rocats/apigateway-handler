@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       dockerfile: Dockerfile
-      image_name: daeuniverse/${{ github.event.repository.name }}
+      image_name: rocats/${{ github.event.repository.name }}
       image_tag: prod-${{ needs.pre-actions.outputs.git_sha_short }}-${{ github.run_number }}
     outputs:
       image_tag: ${{ env.image_tag }}
@@ -42,7 +42,7 @@ jobs:
           tag: ${{ env.image_tag }}
           tag_with_latest: true
           cache: true
-          cache_registry: quay.io/daeuniverse/cache
+          cache_registry: quay.io/rocats/cache
           extra_args: --build-arg PYTHON_VERSION=3.10
 
       - name: Echo image uri
