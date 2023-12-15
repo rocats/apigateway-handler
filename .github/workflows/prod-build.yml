@@ -21,7 +21,6 @@ on:
 
 jobs:
   build-and-push:
-    needs: [pre-actions]
     runs-on: ubuntu-latest
     env:
       dockerfile: Dockerfile
