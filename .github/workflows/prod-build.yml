@@ -57,7 +57,7 @@ jobs:
       - uses: actions/checkout@master
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
 
       - name: Kaniko build - quay.io
         id: quay_build
