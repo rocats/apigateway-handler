@@ -14,7 +14,7 @@
 # === Build Stage === #
 ARG PYTHON_VERSION
 
-FROM python:${PYTHON_VERSION}-bullseye as builder
+FROM python:${PYTHON_VERSION}-slim-bullseye as builder
 
 WORKDIR /app
 
