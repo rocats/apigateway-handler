@@ -33,11 +33,11 @@ jobs:
     strategy:
       matrix:
         include:
-          - goos: linux
-            goarch: amd64
+          - os: linux
+            arch: amd64
             platform: linux/amd64
           - goos: linux
-            goarch: arm64
+            arch: arm64
             platform: linux/arm64
       fail-fast: false
     runs-on: ubuntu-latest
@@ -47,7 +47,7 @@ jobs:
       PYTHON_VERSION: 3.12
       dockerfile: Dockerfile
       image_name: rocats/${{ github.event.repository.name }}
-      image_tag: prod-${{ needs.pre-actions.outputs.git_sha_short }}-${{ github.run_number }}-${{ matrix.platform }}
+      image_tag: prod-${{ needs.pre-actions.outputs.git_sha_short }}-${{ github.run_number }}-${{ matrix.arch }}
     outputs:
       image_tag: ${{ env.image_tag }}
     steps:
@@ -69,7 +69,7 @@ jobs:
           tag_with_latest: true
           cache: true
           cache_registry: quay.io/rocats/cache
-          extra_args: --build-arg PYTHON_VERSION=${{ env.PYTHON_VERSION }} --build-arg opts="GOARCH=${{ matrix.goarch }}" --custom-platform ${{ matrix.platform }}
+          extra_args: --build-arg PYTHON_VERSION=${{ env.PYTHON_VERSION }} --build-arg opts="GOARCH=${{ matrix.arch }}" --custom-platform ${{ matrix.platform }}
 
       - name: Echo image uri
         run: |
