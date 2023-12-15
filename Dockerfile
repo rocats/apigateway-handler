@@ -13,21 +13,25 @@
 
 # === Build Stage === #
 ARG PYTHON_VERSION
+ARG APP_DIR="/app"
 
 FROM python:${PYTHON_VERSION}-bullseye as builder
 
-WORKDIR /app
+ARG APP_DIR
 
-ADD requirements.prod.txt ./requirements.txt
-RUN pip install -r requirements.txt
+ADD requirements.prod.txt ${APP_DIR}/requirements.txt
 
-COPY src/ ./
+WORKDIR ${APP_DIR}
+RUN pip install -r ./requirements.txt
+
+COPY src/ ${APP_DIR}/
+
 RUN pyinstaller index.py
 
 # === Prod Stage === #
 FROM debian:bullseye-slim as prod
 
-ARG PYTHON_VERSION
+ARG APP_DIR
 
 RUN apt update -y && \
     apt-get install -y --no-install-recommends \
