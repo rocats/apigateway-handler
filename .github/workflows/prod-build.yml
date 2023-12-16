@@ -66,7 +66,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           flavor: |
-            type=sha,enable=true,format=short,prefix=${{ env.DEPLOY_ENV }},suffix=-${{ matrix.os }}-${{ matrix.platform }}
+            type=sha,enable=true,format=short,prefix=${{ env.DEPLOY_ENV }},suffix=-${{ matrix.os }}-${{ matrix.arch }}
 
       - name: Kaniko build - ${{ env.REGISTRY }}
         id: quay_build
