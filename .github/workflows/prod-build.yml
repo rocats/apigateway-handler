@@ -77,7 +77,7 @@ jobs:
 
       - name: Echo image uri
         run: |
-          echo "ImageURI (${{ env.REGISTRY }}): ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}"
+          echo "ImageURI ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}"
 
   push-multiarch--images:
     needs: [build]
@@ -102,7 +102,7 @@ jobs:
 
       - uses: int128/docker-manifest-create-action@v1
         with:
-          tags: ${{ steps.metadata.outputs.tags }}
+          tags: ${{ needs.build.outputs.IMAGE_TAG }}
           suffixes: |
-            -amd64
-            -arm64
+            -linux-amd64
+            -linux-arm64
