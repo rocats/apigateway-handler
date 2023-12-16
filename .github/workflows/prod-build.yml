@@ -73,7 +73,7 @@ jobs:
           build_file: ${{ env.DOCKERFILE }}
           # tag: ${{ env.IMAGE_TAG }}-${{ matrix.os }}-${{ matrix.arch }}
           # tag: ${{ steps.metadata.outputs.tags }}
-          tag: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
+          tag: ${{ fromJSON(steps.metadata.outputs.json).tags[0] }}
           tag_with_latest: false
           cache: true
           cache_registry: ${{ env.REGISTRY }}/${{ env.QUAY_USER }}/cache
