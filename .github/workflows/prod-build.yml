@@ -21,7 +21,8 @@ on:
 
 env:
   REGISTRY: quay.io
-  IMAGE_NAME: rocats/${{ github.event.repository.name }}
+  QUAY_USER: rocats
+  IMAGE_NAME: ${{ github.repository }}
   DOCKERFILE: Dockerfile
 
 jobs:
@@ -64,14 +65,14 @@ jobs:
         uses: aevea/action-kaniko@master
         with:
           registry: ${{ env.REGISTRY }}
-          username: rocats
+          username: ${{ env.QUAY_USER }}
           password: ${{ secrets.QUAY_PASS }}
           image: ${{ env.IMAGE_NAME }}
           build_file: ${{ env.DOCKERFILE }}
           tag: ${{ env.IMAGE_TAG }}
           tag_with_latest: true
           cache: true
-          cache_registry: quay.io/rocats/cache
+          cache_registry: ${{ env.REGISTRY }}/${{ env.QUAY_USER }}/cache
           extra_args: --build-arg PYTHON_VERSION=${{ env.PYTHON_VERSION }} --build-arg opts="GOARCH=${{ matrix.arch }}" --custom-platform ${{ matrix.platform }}
 
       - name: Echo image uri
@@ -97,7 +98,7 @@ jobs:
       - uses: docker/metadata-action@v5
         id: metadata
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/${{ needs.build.outputs.IMAGE_TAG }}
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
       - uses: int128/docker-manifest-create-action@v1
         with:
