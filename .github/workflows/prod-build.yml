@@ -27,17 +27,7 @@ env:
   DEPLOY_ENV: prod
 
 jobs:
-  pre-actions:
-    uses: daeuniverse/ci-seed-jobs/.github/workflows/pre-actions.yml@master
-    with:
-      repository: ${{ github.repository }}
-      ref: ${{ github.sha }}
-      fetch-depth: 0
-      check-runs: '[]'
-      notify: false
-
   build:
-    needs: [pre-actions]
     strategy:
       matrix:
         include:
@@ -82,7 +72,8 @@ jobs:
           image: ${{ env.IMAGE_NAME }}
           build_file: ${{ env.DOCKERFILE }}
           # tag: ${{ env.IMAGE_TAG }}-${{ matrix.os }}-${{ matrix.arch }}
-          tag: ${{ steps.metadata.outputs.tags }}
+          # tag: ${{ steps.metadata.outputs.tags }}
+          tag: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
           tag_with_latest: false
           cache: true
           cache_registry: ${{ env.REGISTRY }}/${{ env.QUAY_USER }}/cache
