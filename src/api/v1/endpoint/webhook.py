@@ -1,7 +1,6 @@
-import json
 import os
 from httpx import AsyncClient, HTTPError
-from fastapi import APIRouter, Request, status
+from fastapi import APIRouter, status
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 
@@ -14,14 +13,17 @@ async def forward(url):
 
 
 @router.post("/webhook")
-async def webhook(request: Request):
+async def webhook():
     try:
-        serialized_json = json.dumps(await request.json())
         res = await forward(os.getenv("RELAY_SERVICE_ENDPOINT", ""))
 
         if res.status_code == status.HTTP_200_OK:
             return JSONResponse(
-                content=jsonable_encoder(json.loads(serialized_json)),
+                content=jsonable_encoder(
+                    {
+                        "message": "forwarded payload message to relay service successfully!"
+                    }
+                ),
                 status_code=status.HTTP_200_OK,
             )
         else:
