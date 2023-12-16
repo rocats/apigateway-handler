@@ -58,6 +58,7 @@ jobs:
             suffix=-${{ matrix.os }}-${{ matrix.arch }}
           tags: |
             type=sha,enable=true,format=short,prefix=${{ env.DEPLOY_ENV }}- 
+            type=raw,enable=true,value={{sha}},prefix=${{ env.DEPLOY_ENV }}-
 
       - name: Kaniko build - ${{ env.REGISTRY }}
         id: quay_build
@@ -78,7 +79,7 @@ jobs:
         run: |
           echo "ImageURI ${{ steps.metadata.outputs.tags }}"
 
-  push-multiarch--images:
+  push-multiarch-images:
     needs: [build]
     runs-on: ubuntu-latest
     permissions:
