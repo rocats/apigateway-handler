@@ -18,6 +18,10 @@ on:
   push:
     branches:
       - 'main'
+    paths:
+      - "src/*.py"
+      - ".github/workflows/pr-build.yml"
+      - ".github/workflows/prod-build.yml"
 
 env:
   REGISTRY: quay.io
