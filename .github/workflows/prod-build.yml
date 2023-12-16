@@ -20,10 +20,9 @@ on:
       - 'main'
 
 env:
-  registry: quay.io
-  image_name: rocats/${{ github.event.repository.name }}
-  image_tag: prod-${{ needs.pre-actions.outputs.git_sha_short }}-${{ github.run_number }}-${{ matrix.os }}-${{ matrix.arch }}
-  dockerfile: Dockerfile
+  REGISTRY: quay.io
+  IMAGE_NAME: rocats/${{ github.event.repository.name }}
+  DOCKERFILE: Dockerfile
 
 jobs:
   pre-actions:
@@ -51,8 +50,9 @@ jobs:
     env:
       CGO_ENABLED: 0
       PYTHON_VERSION: 3.12
+      IMAGE_TAG: prod-${{ needs.pre-actions.outputs.git_sha_short }}-${{ github.run_number }}-${{ matrix.os }}-${{ matrix.arch }}
     outputs:
-      image_tag: ${{ env.image_tag }}
+      IMAGE_TAG: ${{ env.IMAGE_TAG }}
     steps:
       - uses: actions/checkout@master
 
@@ -63,12 +63,12 @@ jobs:
         id: quay_build
         uses: aevea/action-kaniko@master
         with:
-          registry: ${{ env.registry }}
+          registry: ${{ env.REGISTRY }}
           username: rocats
           password: ${{ secrets.QUAY_PASS }}
-          image: ${{ env.image_name }}
-          build_file: ${{ env.dockerfile }}
-          tag: ${{ env.image_tag }}
+          image: ${{ env.IMAGE_NAME }}
+          build_file: ${{ env.DOCKERFILE }}
+          tag: ${{ env.IMAGE_TAG }}
           tag_with_latest: true
           cache: true
           cache_registry: quay.io/rocats/cache
@@ -76,9 +76,9 @@ jobs:
 
       - name: Echo image uri
         run: |
-          echo "ImageURI (${{ env.registry }}): ${{ env.registry }}/${{ env.image_name }}:${{ env.image_tag }}"
+          echo "ImageURI (${{ env.REGISTRY }}): ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}"
 
-  build-multi-architecture:
+  push-multiarch--images:
     needs: [build]
     runs-on: ubuntu-latest
     permissions:
@@ -88,7 +88,8 @@ jobs:
       - uses: docker/metadata-action@v5
         id: metadata
         with:
-          images: ${{ env.registry }}/${{ env.image_name }}/${{ env.image_tag }}
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/${{ needs.build.outputs.IMAGE_TAG }}
+
       - uses: int128/docker-manifest-create-action@v1
         with:
           tags: ${{ steps.metadata.outputs.tags }}
