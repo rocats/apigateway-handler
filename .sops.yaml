@@ -1,6 +1,8 @@
 # .sops.yaml
+key_groups:
+  - pgp:
+      - B08FE2644F9FC450AF425FF5B94F394B72884017
 creation_rules:
-  - encrypted_regex: "^(environment)$"
-    key_groups:
-      - pgp:
-          - B08FE2644F9FC450AF425FF5B94F394B72884017
+  - path_regex: .env
+  - path_regex: docker-compose.yml
+    encrypted_regex: "^(environment)$"
