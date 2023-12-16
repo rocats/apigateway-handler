@@ -3,11 +3,15 @@ services:
     apigateway-interceptor:
         image: quay.io/rocats/apigateway-interceptor:latest
         container_name: apigateway-interceptor
+        build:
+            context: .
+            args:
+                PYTHON_VERSION: 3.12
         ports:
             - 5000:5000
         environment:
-            WHITELIST_CHANNELS: ENC[AES256_GCM,data:FvdaPbBS6lnPhw==,iv:xZEwPpFIy69TP4JtevOwSD6c6vvKG35pGF9G5cdNYkQ=,tag:q04GfxSsGpjeY0BSs9bKrQ==,type:str]
-            RELAY_SERVICE_ENDPOINT: ENC[AES256_GCM,data:3wGjBDDMOdiFlT55YPEXyawoZje1UxiLAQTmZ//n8PvPO7L2pA==,iv:BHQP3ISjC2qurEMrLfN6eCGmFCkxw5D1eGyXV241abc=,tag:QJflq6yB+yxl67TxqS6G1A==,type:str]
+            WHITELIST_CHANNELS: ENC[AES256_GCM,data:W0rBvGBN3BRm9g==,iv:Ud7ZX02b/t8U3uyhpXR2c9zSJbkiGCoGwxfWdqSvABk=,tag:N93ot50OlfZNaeDfW+Wt6Q==,type:str]
+            RELAY_SERVICE_ENDPOINT: ENC[AES256_GCM,data:WPZzJICYsgHIs5lFPHTA++MlWh1fcKP+AhjT8FBVCTklVoA48Q==,iv:pxg4kmjrSgqi8g6gJBdsKLB4+4B7OQal/v+he7uBumE=,tag:dIcscZ3CnltrSxsLt68xxg==,type:str]
         restart: unless-stopped
 sops:
     kms: []
@@ -18,33 +22,33 @@ sops:
         - recipient: age1zqdtv47nfckekj4ppvyapu6j8tmwun8ykf4agljdw2tsraa84slqq87xhf
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBJRkNLK0o4SEhEMGwvd0tR
-            TmRkdHlwa1YrYmZ4VmF6Sy96QkkwdkRiRVZNCnZTNHBNYnFJRjh1M25ITHZWUHdx
-            ZE8vRG1SbWdyaW1XMFVEUDBvOGowZkkKLS0tIEFYanJvZlpLd00yNUxXaWxJYUZZ
-            dWMrVGR3TUh2S3FzMklUWFpQTTZHdDQK9ou4Tm5GPzCNT7nG+JhDL28XNwYAapz2
-            x+Y6quCahe8/6P6jqt/UIm4tVDS7DelT+FZT52+juaua1ykJrvSVUQ==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBlRVBJSnpPd3VCek13bXY3
+            YVlrS1lRWlU0QjkrQVNlQWVFbXRjQm5zUkZZClhjOTRDaHJYR01zWEFIY0VGOTFs
+            OWllclhPV1hMN1dFNkxxbERyVnNKTDgKLS0tIG9BNnVDVW1FM1JtTngxKzZMeGxX
+            WGRaNVRhd2NJMUNUK1FrSGUraHZ1Rm8KBuX2sdoNRRm9i+4Fpc0X2bkOaGOvsu4+
+            6kwDPR6tcqj8pfKHRP5j3toS4cWgW6OlTx3mu28qA6NuWW5kuFPscw==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2023-12-16T05:18:05Z"
-    mac: ENC[AES256_GCM,data:DbFUtBWwKH+m9n4xO/O2l5qLQ7tOPNsvv8U4JY9eF9/Z/5CJk3O6Di2Rak2rxUcpx5K1RdDcLrCbu959XThd2lkGuKxLiIXmm5X2jJsVY0jbA0rWmEA/q/+r6temKFHFgqKH2lZdhcMKZ9sIeW9ofQD1noVJVxRldZmUG8i+AMU=,iv:N1g3H6bn0pJtCZprK1O/QXPQ655b+8cIuKkr2p1OrrQ=,tag:Pld+2LJc1OGd+A+mbRfDww==,type:str]
+    lastmodified: "2023-12-16T05:33:03Z"
+    mac: ENC[AES256_GCM,data:ztLrlkIphxUYd9i/L9GGbl+nQoB5ZlS8pgRSQmq/XDXn0MbZ5/A4Wq0pzNzqfq2quOw2OYsp2SiHteXZF4DPgbKZfF8Fs9M1ehb30G8eoCKmd/Y81Y8/2z9y2QYIPJ83LNFnA2RmIcswf7637aQT/VT9QWlpxdADn/KzWHbre/U=,iv:dtlfIsi3tEBo27+6hZQdgKPhEdAW7KejBsUkp9MKFcI=,tag:69G/yemjqP6k3Su6NIDogA==,type:str]
     pgp:
-        - created_at: "2023-12-16T05:18:05Z"
+        - created_at: "2023-12-16T05:33:03Z"
           enc: |-
             -----BEGIN PGP MESSAGE-----
 
-            hQIMAzVskl6rsqh0ARAAswFSm0UxhF56DbYUvULSpUNI+TfvCjIPUhDJIn9ZkeNg
-            myNALrJymdoX0DGqNFMI8f4MFN2bunXpohzMiANBhNJW4rdig80Kce6nsJ/IoKrd
-            IpsAdr5PxzYgBYehqkbjjVhnQXRdWkfNE+EVDyumup+dpECOvIjYI56HgFiRn0BV
-            wLw2l/H8uX2sHJkwI/q1uwFXGCGs2W99uucRbWW/1UzyQnGnmT5/Z+017RZqax0h
-            uwIxuHALAypIrpI6HACxh4kQLQAJjEtQs4D7wi3P/CUpbQqi1A/wrOD+5iKRtcdI
-            y+jlJuIMjLX/sHQtSU/WECwN9/pqdtwDJ3TEM8p0f+/Mu50VAIa7r5Q9BAKTURJA
-            RBSri1ZxJObudLMjVIlSUyKDcyCrTaKzi8DL76QgrfWvxzcL7H3HXZC4/iVajPbD
-            Cx/8qYDZ3XtnzvBQkJY3DjMDcdRBcxBOLrtjf4DJ1FiDEo3Bli0JUbgzTEakhbHl
-            v3NgZPzSfuWKXwLSQcFzVXAC4QEwbOShDqRx/5I1vjWpLLV9ZognRUSYOaJHouZj
-            WU4EKwdjcTe2jpGxVVKvDD55fOdIJKg29/pwNpCzAVOvhu76wzctgQYSzkgFRsWK
-            1ZKcoQDflJOS+P9MyRQrcu0NUTcmbKlP0PalJs1ZKHnaB1ndek7rcXdIFLOi8lDS
-            XAFwo/NLqbunbglA8YN6QKZZ+sDxTVRpbTvv7z4RU5YVyJUrl/HHJpGtTqrAlxJv
-            n3VL8L2BZikq0U6tAb7B26LPh8VndQaiQwaN0kc2VuymbRtoK324t/DpmVpN
-            =UW+1
+            hQIMAzVskl6rsqh0AQ/9GtCw9G++81tQyZuZiLLsASac/dn7VXO5NINWlS25u4ZF
+            SJuPtJoEfeSJM3BtQ5ZWMasS4DIUhoNT3x9hdNHcFN3JXLN7pPdq+08+b0sGf5VM
+            dIhJL0JPkZ/9qBsxdCThr+HMW2DoNFAOqas0Ep7LMM+Spt8BNUN4G28IPzTJyZCh
+            jhYpA2mndq6dYZGddSPxwULKSmXGX1bjT/7KA9chCRUOZDDQnmudGMICLUSMuej3
+            Qmdvv7OrIJNjDh+W3mkd2EuL9keT/zxe1jbZuo8AY9Mu6lTcScR1Y7k5HrPxuK1b
+            emPxrzbozmcFeWYPJkEsTJDvpAJeQ/pl8j4y/C7wBbryq1xniIPVw0VHG4p+7Bd8
+            eg3vHsJSgoWOczhoSnxFmbPbudXVuFIO8qFizGkQ29NFmHTukVKewTg7bpWCM7Ya
+            V5MKOq8zWa11INFaJKIhHdpeXL7q2hFyF/Y7+U8Me/7ETds6zYhIxps4ZIlPDp4Y
+            cnOBH/zBf+QTQsYNczdvf/3f/hE6OFZyJj/Dhgv2TGXGx4JyenjddBXla7JR2di7
+            zFVhfmDHYhVgrgpXWGj8H00HG1Uv6s7Cx9zwE6H36B1Dmf0uvMKsNVXvH1tqTS9y
+            zBoh108kxCLOW0FxEQb47gRaeBpYcHl1joUaxeoIrjWczoUjzw+wyUumVbIqjjXS
+            XAEq95IzUT5qBN3Z2nI8kYu2vXnzKff6tYpnBQPqULLSypHcYjjlkqFph5BHJHyw
+            PyaxN5sJKofV8UkzGHI9yt9z+rexzEnLgd0gK9j7LXdv4E28em8reLHEVmNo
+            =YAgy
             -----END PGP MESSAGE-----
           fp: B08FE2644F9FC450AF425FF5B94F394B72884017
     encrypted_regex: ^(environment)$
