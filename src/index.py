@@ -4,8 +4,9 @@ from uvicorn import run
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from constant import LOCAL_DEV_PORT
-from api.v1.middleware.cloudevent_metadata import CloudEventMetadata
 from api.v1.middleware.schema_validate import ValidateChannel
+from api.v1.middleware.cloudevent_metadata import CloudEventMetadata
+from api.v1.middleware.log_response import LogResponse
 from api.v1.middleware.request_body import InterceptRequestBody
 from api.v1.middleware.process_time import ProcessTime
 from api.v1.router import router
@@ -17,8 +18,9 @@ app = FastAPI()
 app.include_router(router, prefix="/api/v1")
 
 # middlewares
-app.add_middleware(BaseHTTPMiddleware, dispatch=CloudEventMetadata())
 app.add_middleware(BaseHTTPMiddleware, dispatch=ValidateChannel())
+app.add_middleware(BaseHTTPMiddleware, dispatch=CloudEventMetadata())
+app.add_middleware(BaseHTTPMiddleware, dispatch=LogResponse())
 app.add_middleware(BaseHTTPMiddleware, dispatch=InterceptRequestBody())
 app.add_middleware(BaseHTTPMiddleware, dispatch=ProcessTime())
 

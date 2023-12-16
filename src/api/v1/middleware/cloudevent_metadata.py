@@ -44,19 +44,4 @@ class CloudEventMetadata:
 
         response = await call_next(request)
 
-        structlog.contextvars.bind_contextvars(
-            status_code=response.status_code,
-        )
-
-        # Exclude /healthcheck endpoint from producing logs
-        if request.url.path != BASE_API_PATH + "/health":
-            if 400 <= response.status_code < 500:
-                logger.warn("Client error")
-            elif response.status_code >= 500:
-                logger.error("Internal server error")
-            else:
-                logger.info("OK")
-        else:
-            logger.info("Healthcheck OK")
-
         return response
