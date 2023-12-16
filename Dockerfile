@@ -14,7 +14,7 @@
 ARG PYTHON_VERSION
 ARG APP_DIR="/app"
 
-FROM python:${PYTHON_VERSION}-bullseye as builder
+FROM python:${PYTHON_VERSION}-slim-bullseye as builder
 
 ARG APP_DIR
 
