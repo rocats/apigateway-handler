@@ -54,10 +54,8 @@ jobs:
         id: metadata
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          flavor: |
-            suffix=-${{ matrix.os }}-${{ matrix.arch }}
           tags: |
-            type=sha,enable=true,format=short,prefix=${{ env.DEPLOY_ENV }}- 
+            type=sha,enable=true,format=short,prefix=${{ env.DEPLOY_ENV }}-,suffix=-${{ matrix.os }}-${{ matrix.arch }}
             type=raw,enable=true,value={{sha}},prefix=${{ env.DEPLOY_ENV }}-
 
       - name: Kaniko build - ${{ env.REGISTRY }}
