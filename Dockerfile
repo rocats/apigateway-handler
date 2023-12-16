@@ -26,25 +26,28 @@ RUN pip install -r requirements.txt
 
 COPY src/ ./
 
-RUN pyinstaller index.py
+ENTRYPOINT [ "/usr/local/bin/python" ]
+CMD [ "index.py" ]
+
+# RUN pyinstaller index.py
 
 # === Prod Stage === #
-FROM debian:bullseye-slim as prod
+# FROM debian:bullseye-slim as prod
 
-ARG APP_DIR
+# ARG APP_DIR
 
-RUN apt update -y && \
-    apt-get install -y --no-install-recommends \
-    ca-certificates
+# RUN apt update -y && \
+#     apt-get install -y --no-install-recommends \
+#     ca-certificates
 
-RUN apt-get clean autoclean && \
-    apt-get autoremove -y && \
-    rm -rf /var/lib/{apt,dpkg,cache,log}/
+# RUN apt-get clean autoclean && \
+#     apt-get autoremove -y && \
+#     rm -rf /var/lib/{apt,dpkg,cache,log}/
 
-WORKDIR ${APP_DIR}
+# WORKDIR ${APP_DIR}
 
-COPY --from=builder ${APP_DIR}/dist/index/ ./
+# COPY --from=builder ${APP_DIR}/dist/index/ ./
 
-RUN chmod +x ./index
+# RUN chmod +x ./index
 
-CMD ["./index"]
+# CMD ["./index"]

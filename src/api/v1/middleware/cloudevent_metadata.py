@@ -2,7 +2,7 @@ import json
 import structlog
 from typing import Any
 from fastapi import Request
-from cloudevents.http import from_http, CloudEvent
+from cloudevents.http import CloudEvent
 
 from constant import BASE_API_PATH
 

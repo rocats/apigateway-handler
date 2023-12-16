@@ -1,1 +1,2 @@
+LOCAL_DEV_PORT = 5000
 BASE_API_PATH = "/api/v1"
