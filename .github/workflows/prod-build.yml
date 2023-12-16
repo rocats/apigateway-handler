@@ -24,6 +24,7 @@ env:
   QUAY_USER: rocats
   IMAGE_NAME: ${{ github.repository }}
   DOCKERFILE: Dockerfile
+  DEPLOY_ENV: prod
 
 jobs:
   pre-actions:
@@ -51,16 +52,23 @@ jobs:
     env:
       CGO_ENABLED: 0
       PYTHON_VERSION: 3.12
-      IMAGE_TAG: prod-${{ needs.pre-actions.outputs.git_sha_short }}-${{ github.run_number }}
+      # IMAGE_TAG: prod-${{ needs.pre-actions.outputs.git_sha_short }}-${{ github.run_number }}
     outputs:
-      IMAGE_TAG: ${{ env.IMAGE_TAG }}
+      IMAGE_TAG: ${{ steps.metadata.outputs.tags }}
     steps:
       - uses: actions/checkout@master
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
-      - name: Kaniko build - quay.io
+      - uses: docker/metadata-action@v5
+        id: metadata
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          flavor: |
+            type=sha,enable=true,format=short,prefix=${{ DEPLOY_ENV }},suffix=-${{ matrix.os }}-${{ matrix.platform }}
+
+      - name: Kaniko build - ${{ env.REGISTRY }}
         id: quay_build
         uses: aevea/action-kaniko@master
         with:
@@ -69,8 +77,9 @@ jobs:
           password: ${{ secrets.QUAY_PASS }}
           image: ${{ env.IMAGE_NAME }}
           build_file: ${{ env.DOCKERFILE }}
-          tag: ${{ env.IMAGE_TAG }}-${{ matrix.os }}-${{ matrix.arch }}
-          tag_with_latest: true
+          # tag: ${{ env.IMAGE_TAG }}-${{ matrix.os }}-${{ matrix.arch }}
+          tag: ${{ steps.metadata.outputs.tags }}
+          tag_with_latest: false
           cache: true
           cache_registry: ${{ env.REGISTRY }}/${{ env.QUAY_USER }}/cache
           extra_args: --build-arg PYTHON_VERSION=${{ env.PYTHON_VERSION }} --build-arg opts="GOARCH=${{ matrix.arch }}" --custom-platform ${{ matrix.platform }}
@@ -99,10 +108,6 @@ jobs:
         id: metadata
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-
-      - run: |
-          echo -e ${{ steps.metadata.outputs.tags }}
-        shell: /binb/bash
 
       - uses: int128/docker-manifest-create-action@v1
         with:
