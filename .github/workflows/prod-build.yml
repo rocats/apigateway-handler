@@ -19,6 +19,12 @@ on:
     branches:
       - 'main'
 
+env:
+  registry: quay.io
+  image_name: rocats/${{ github.event.repository.name }}
+  image_tag: prod-${{ needs.pre-actions.outputs.git_sha_short }}-${{ github.run_number }}-${{ matrix.os }}-${{ matrix.arch }}
+  dockerfile: Dockerfile
+
 jobs:
   pre-actions:
     uses: daeuniverse/ci-seed-jobs/.github/workflows/pre-actions.yml@master
@@ -29,7 +35,8 @@ jobs:
       check-runs: '[]'
       notify: false
 
-  build-and-push:
+  build:
+    needs: [pre-actions]
     strategy:
       matrix:
         include:
@@ -41,13 +48,9 @@ jobs:
             platform: linux/arm64
       fail-fast: false
     runs-on: ubuntu-latest
-    needs: [pre-actions]
     env:
       CGO_ENABLED: 0
       PYTHON_VERSION: 3.12
-      dockerfile: Dockerfile
-      image_name: rocats/${{ github.event.repository.name }}
-      image_tag: prod-${{ needs.pre-actions.outputs.git_sha_short }}-${{ github.run_number }}-${{ matrix.arch }}
     outputs:
       image_tag: ${{ env.image_tag }}
     steps:
@@ -60,7 +63,7 @@ jobs:
         id: quay_build
         uses: aevea/action-kaniko@master
         with:
-          registry: quay.io
+          registry: ${{ env.registry }}
           username: rocats
           password: ${{ secrets.QUAY_PASS }}
           image: ${{ env.image_name }}
@@ -73,4 +76,22 @@ jobs:
 
       - name: Echo image uri
         run: |
-          echo "ImageURI (quay.io): quay.io/${{ env.image_name }}:${{ env.image_tag }}"
+          echo "ImageURI (${{ env.registry }}): ${{ env.registry }}/${{ env.image_name }}:${{ env.image_tag }}"
+
+  build-multi-architecture:
+    needs: [build]
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: docker/metadata-action@v5
+        id: metadata
+        with:
+          images: ${{ env.registry }}/${{ env.image_name }}/${{ env.image_tag }}
+      - uses: int128/docker-manifest-create-action@v1
+        with:
+          tags: ${{ steps.metadata.outputs.tags }}
+          suffixes: |
+            -amd64
+            -arm64
