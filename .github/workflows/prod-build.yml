@@ -56,7 +56,6 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             type=sha,enable=true,format=short,prefix=${{ env.DEPLOY_ENV }}-,suffix=-${{ matrix.os }}-${{ matrix.arch }}
-            type=raw,enable=true,value={{sha}},prefix=${{ env.DEPLOY_ENV }}-
 
       - name: Kaniko build - ${{ env.REGISTRY }}
         id: quay_build
@@ -93,9 +92,16 @@ jobs:
           username: ${{ env.QUAY_USER }}
           password: ${{ secrets.QUAY_PASS }}
 
+      - uses: docker/metadata-action@v5
+        id: metadata
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,enable=true,value={{sha}},prefix=${{ env.DEPLOY_ENV }}-
+
       - uses: int128/docker-manifest-create-action@v1
         with:
-          tags: ${{ needs.build.outputs.IMAGE_URI }}
+          tags: ${{ steps.metadata.outputs.tags }}
           suffixes: |
             -linux-amd64
             -linux-arm64
