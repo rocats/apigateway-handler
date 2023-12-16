@@ -42,9 +42,8 @@ jobs:
     env:
       CGO_ENABLED: 0
       PYTHON_VERSION: 3.12
-      # IMAGE_TAG: prod-${{ needs.pre-actions.outputs.git_sha_short }}-${{ github.run_number }}
     outputs:
-      IMAGE_TAG: ${{ steps.metadata.outputs.tags }}
+      IMAGE_URI: ${{ steps.metadata.outputs.tags }}
     steps:
       - uses: actions/checkout@master
 
@@ -56,10 +55,9 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           flavor: |
-            prefix=${{ env.DEPLOY_ENV }}- 
             suffix=-${{ matrix.os }}-${{ matrix.arch }}
           tags: |
-            type=sha,enable=true,format=short
+            type=sha,enable=true,format=short,prefix=${{ env.DEPLOY_ENV }}- 
 
       - name: Kaniko build - ${{ env.REGISTRY }}
         id: quay_build
@@ -70,8 +68,6 @@ jobs:
           password: ${{ secrets.QUAY_PASS }}
           image: ${{ env.IMAGE_NAME }}
           build_file: ${{ env.DOCKERFILE }}
-          # tag: ${{ env.IMAGE_TAG }}-${{ matrix.os }}-${{ matrix.arch }}
-          # tag: ${{ steps.metadata.outputs.tags }}
           tag: ${{ fromJSON(steps.metadata.outputs.json).labels['org.opencontainers.image.version'] }}
           tag_with_latest: false
           cache: true
@@ -80,7 +76,7 @@ jobs:
 
       - name: Echo image uri
         run: |
-          echo "ImageURI ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}"
+          echo "ImageURI ${{ steps.metadata.outputs.tags }}"
 
   push-multiarch--images:
     needs: [build]
@@ -105,7 +101,7 @@ jobs:
 
       - uses: int128/docker-manifest-create-action@v1
         with:
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.build.outputs.IMAGE_TAG }}
+          tags: ${{ steps.metadata.outputs.tags }}
           suffixes: |
             -linux-amd64
             -linux-arm64
