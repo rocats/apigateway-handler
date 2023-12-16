@@ -97,7 +97,7 @@ jobs:
 
       - uses: int128/docker-manifest-create-action@v1
         with:
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.build.outputs.IMAGE_TAG }}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.build.outputs.IMAGE_TAG }},${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
           suffixes: |
             -linux-amd64
             -linux-arm64
