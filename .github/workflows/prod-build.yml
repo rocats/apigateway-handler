@@ -95,14 +95,9 @@ jobs:
           username: ${{ env.QUAY_USER }}
           password: ${{ secrets.QUAY_PASS }}
 
-      - uses: docker/metadata-action@v5
-        id: metadata
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-
       - uses: int128/docker-manifest-create-action@v1
         with:
-          tags: ${{ steps.metadata.outputs.tags }}:${{ needs.build.outputs.IMAGE_TAG }}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.build.outputs.IMAGE_TAG }}
           suffixes: |
             -linux-amd64
             -linux-arm64
