@@ -98,11 +98,11 @@ jobs:
       - uses: docker/metadata-action@v5
         id: metadata
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.build.outputs.IMAGE_TAG }}
 
       - uses: int128/docker-manifest-create-action@v1
         with:
-          tags: ${{ needs.build.outputs.IMAGE_TAG }}
+          tags: ${{ steps.metadata.outputs.tags }}
           suffixes: |
             -linux-amd64
             -linux-arm64
