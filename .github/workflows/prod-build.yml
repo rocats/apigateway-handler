@@ -28,7 +28,7 @@ env:
   QUAY_USER: rocats
   IMAGE_NAME: ${{ github.repository }}
   DOCKERFILE: Dockerfile
-  DEPLOY_ENV: prod
+  DEPLOY_STAGE: prod
 
 jobs:
   build:
@@ -59,7 +59,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=sha,enable=true,format=short,prefix=${{ env.DEPLOY_ENV }}-,suffix=-${{ matrix.os }}-${{ matrix.arch }}
+            type=sha,enable=true,format=short,prefix=${{ env.DEPLOY_STAGE }}-,suffix=-${{ matrix.os }}-${{ matrix.arch }}
 
       - name: Kaniko build - ${{ env.REGISTRY }}
         id: quay_build
@@ -101,7 +101,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,enable=true,value={{sha}},prefix=${{ env.DEPLOY_ENV }}-
+            type=raw,enable=true,value={{sha}},prefix=${{ env.DEPLOY_STAGE }}-
             type=raw,value=latest
 
       - name: Push multi-arch images
