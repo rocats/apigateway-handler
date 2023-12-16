@@ -11,7 +11,6 @@
 #  This is a self-hosted software, liscensed under the Apache License. 
 #  See /License for more information.
 
-# === Build Stage === #
 ARG PYTHON_VERSION
 ARG APP_DIR="/app"
 
@@ -28,26 +27,3 @@ COPY src/ ./
 
 ENTRYPOINT [ "/usr/local/bin/python" ]
 CMD [ "index.py" ]
-
-# RUN pyinstaller index.py
-
-# === Prod Stage === #
-# FROM debian:bullseye-slim as prod
-
-# ARG APP_DIR
-
-# RUN apt update -y && \
-#     apt-get install -y --no-install-recommends \
-#     ca-certificates
-
-# RUN apt-get clean autoclean && \
-#     apt-get autoremove -y && \
-#     rm -rf /var/lib/{apt,dpkg,cache,log}/
-
-# WORKDIR ${APP_DIR}
-
-# COPY --from=builder ${APP_DIR}/dist/index/ ./
-
-# RUN chmod +x ./index
-
-# CMD ["./index"]
