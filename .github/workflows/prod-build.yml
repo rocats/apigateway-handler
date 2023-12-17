@@ -57,8 +57,7 @@ jobs:
         env:
           REF: ${{ github.ref }}
         run: |
-          count=$(git rev-list --count HEAD)
-          echo "count=${count}" >> $GITHUB_OUTPUT
+          echo "count=$(git rev-list --count HEAD)" >> $GITHUB_OUTPUT
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
