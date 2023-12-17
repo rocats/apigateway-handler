@@ -96,12 +96,20 @@ jobs:
           username: ${{ env.QUAY_USER }}
           password: ${{ secrets.QUAY_PASS }}
 
+      - name: Get revision count
+        id: get_rev_count
+        env:
+          REF: ${{ github.ref }}
+        run: |
+          count=$(git rev-list --count HEAD)
+          echo "count=${count}" >> $GITHUB_OUTPUT
+
       - uses: docker/metadata-action@v5
         id: metadata
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,enable=true,value={{sha}},prefix=${{ env.DEPLOY_STAGE }}-
+            type=raw,enable=true,value={{sha}}-r${{ steps.get_rev_count.outputs.count }},prefix=${{ env.DEPLOY_STAGE }}-
             type=raw,value=latest
 
       - name: Push multi-arch images
