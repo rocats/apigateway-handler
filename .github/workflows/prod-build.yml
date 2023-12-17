@@ -51,6 +51,7 @@ jobs:
       REV_COUNT: ${{ steps.get_rev_count.outputs.count }}
     steps:
       - uses: actions/checkout@master
+        fetch-depth: 0
 
       - name: Get revision count
         id: get_rev_count
@@ -109,7 +110,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,enable=true,value={{sha}}-r${{ needs.build.outputs.count }},prefix=${{ env.DEPLOY_STAGE }}-
+            type=raw,enable=true,value={{sha}}-r${{ needs.build.outputs.REV_COUNT }},prefix=${{ env.DEPLOY_STAGE }}-
             type=raw,value=latest
 
       - name: Push multi-arch images
