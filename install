@@ -5,4 +5,4 @@ set -ex
 top=$(cd $(dirname $0); pwd)
 python3 -m venv ${top}/venv
 
-${top}/venv/bin/pip3 install -r requirements.txt
+${top}/venv/bin/pip3 install -r requirements.dev.txt
