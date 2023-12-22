@@ -1,10 +1,14 @@
-import os
-from httpx import AsyncClient, HTTPError
+import structlog
+from uuid import uuid4
+from httpx import AsyncClient
 from fastapi import APIRouter, status
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
+from cloudevents.http import CloudEvent
+from cloudevents.conversion import to_binary
 
 router = APIRouter()
+logger = structlog.get_logger()
 
 
 async def forward(url):
@@ -14,22 +18,15 @@ async def forward(url):
 
 @router.post("/webhook")
 async def webhook():
-    try:
-        res = await forward(os.getenv("RELAY_SERVICE_ENDPOINT", ""))
+    attributes = {
+        "id": str(uuid4()),
+        "type": "dev.knative.staging.repeater-v3.webhook-relay",
+        "source": "dev.knative.staging/repeater-v3/apigateway-interceptor",
+    }
+    data = {"message": "forwarded payload message to relay service successfully!"}
+    event = CloudEvent(attributes, data)
+    headers, body = to_binary(event)
 
-        if res.status_code == status.HTTP_200_OK:
-            return JSONResponse(
-                content=jsonable_encoder(
-                    {
-                        "message": "forwarded payload message to relay service successfully!"
-                    }
-                ),
-                status_code=status.HTTP_200_OK,
-            )
-        else:
-            raise HTTPError("Failed to relay message to designated service")
-    except HTTPError as err:
-        return JSONResponse(
-            content=jsonable_encoder({"error": str(err)}),
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        )
+    return JSONResponse(
+        headers=headers, content=jsonable_encoder(body), status_code=status.HTTP_200_OK
+    )

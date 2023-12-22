@@ -2,7 +2,7 @@ import json
 import structlog
 from typing import Any
 from fastapi import Request
-from cloudevents.http import CloudEvent
+from cloudevents.http import from_http, CloudEvent
 
 from constant import BASE_API_PATH
 
@@ -26,7 +26,7 @@ class CloudEventMetadata:
         # extract event
         if str(request.url).split(BASE_API_PATH)[1] != "/health":
             body = json.dumps(await request.json())
-            event = self.new_event(body)
+            event = from_http(dict(request.headers), body)
 
             # construct logger
             structlog.contextvars.clear_contextvars()
