@@ -55,6 +55,7 @@ async def test_webhook():
             headers=headers,
         )
 
+        logger.debug(dict(response.headers))
         logger.debug(response.json())
 
         # Assert the response status code and content
