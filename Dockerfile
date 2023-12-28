@@ -25,6 +25,7 @@ ENV LANG=C.UTF-8 \
 
 WORKDIR ${APP_DIR}
 
+USER root
 RUN python -m venv venv
 ADD requirements.prod.txt ${APP_DIR}/requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
