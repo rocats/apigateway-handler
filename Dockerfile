@@ -11,19 +11,36 @@
 #  This is a self-hosted software, liscensed under the Apache License. 
 #  See /License for more information.
 
-ARG PYTHON_VERSION
 ARG APP_DIR="/app"
 
-FROM python:${PYTHON_VERSION}-slim-bullseye as builder
+### BUILDER ###
+FROM cgr.dev/chainguard/python:latest-dev as builder
 
 ARG APP_DIR
 
-ADD requirements.prod.txt ${APP_DIR}/requirements.txt
+ENV LANG=C.UTF-8 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PATH="${APP_DIR}/venv/bin:$PATH"
 
 WORKDIR ${APP_DIR}
-RUN pip install -r requirements.txt
 
+RUN python -m venv venv
+ADD requirements.prod.txt ${APP_DIR}/requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+### PROD ###
+FROM cgr.dev/chainguard/python:latest as prod
+
+ARG APP_DIR
+
+ENV PYTHONUNBUFFERED=1 \
+    PATH="${APP_DIR}/venv/bin:$PATH"
+
+WORKDIR ${APP_DIR}
+
+COPY --from=builder ${APP_DIR}/venv ./venv
 COPY src/ ./
 
-ENTRYPOINT [ "/usr/local/bin/python" ]
+ENTRYPOINT [ "python" ]
 CMD [ "index.py" ]
