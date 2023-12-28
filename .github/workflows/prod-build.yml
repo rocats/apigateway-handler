@@ -19,6 +19,7 @@ on:
     branches:
       - 'main'
     paths:
+      - "Dockerfile"
       - "src/**/*.py"
       - ".github/workflows/pr-build.yml"
       - ".github/workflows/prod-build.yml"
