@@ -28,7 +28,9 @@ WORKDIR ${APP_DIR}
 USER root
 RUN python -m venv venv
 ADD requirements.prod.txt ${APP_DIR}/requirements.txt
+
 RUN pip install --no-cache-dir -r requirements.txt
+RUN rm -f ${APP_DIR}/bin/pip*
 
 ### PROD ###
 FROM cgr.dev/chainguard/python:latest as prod
