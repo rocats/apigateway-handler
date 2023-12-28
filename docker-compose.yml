@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  apigateway-interceptor:
+    image: quay.io/rocats/apigateway-interceptor:latest
+    container_name: apigateway-interceptor
+    build:
+      context: .
+    ports:
+      - 5000:5000
+    environment:
+      RELAY_SERVICE_ENDPOINT: ""
+    restart: unless-stopped
